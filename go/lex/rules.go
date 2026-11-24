@@ -1,5 +1,7 @@
 package lex
 
+import "github.com/mooss/bagend/go/fun/eager/lie"
+
 // Rule scans a token when its leading input matches.
 // Must return an error when the rule was activated but the input was invalid.
 // Rules must always be called on a non-empty Lexer and can assume the first character is not EOF.
@@ -40,35 +42,21 @@ func Quoted[T any](delimiter, escape rune, unterminated LexicalFailure, typ T) R
 	}
 }
 
-// LongestPrefix matches the longest matching prefix.
-func LongestPrefix[T any](typ T, prefixes ...string) Rule[T] {
-	//TODO: Use Map to precompute prefixes rune slices.
-	//TODO: Rename to FirstPrefix and return at first match (it's up to the caller to prepare the call).
+// FirstPrefix returns the first match of the given prefixes.
+func FirstPrefix[T any](typ T, prefixes ...string) Rule[T] {
+	runePrefixes := lie.Map(func(s string) []rune { return []rune(s) }, prefixes)
 	return func(l *Lexer[T]) (Token[T], bool, error) {
-		longest := 0
-		for _, prefix := range prefixes {
-			runes := []rune(prefix)
-			if len(runes) <= longest {
+		for _, runes := range runePrefixes {
+			if len(runes) == 0 {
 				continue
 			}
-			match := true
-			for i, r := range runes {
-				if l.Peek(i) != r {
-					match = false
-					break
-				}
-			}
-			if match {
-				longest = len(runes)
+			if l.MatchRunes(runes) {
+				l.Forward(len(runes))
+				return l.Produce(typ), true, nil
 			}
 		}
-		if longest == 0 {
-			return Token[T]{}, false, nil
-		}
-		for range longest {
-			l.Next()
-		}
-		return l.Produce(typ), true, nil
+
+		return Token[T]{}, false, nil
 	}
 }
 

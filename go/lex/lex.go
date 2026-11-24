@@ -54,6 +54,21 @@ func (l *Lexer[T]) Failuref(reason LexicalFailure, msg string, args ...any) erro
 	return fmt.Errorf("lexer: %s at %#q: "+msg, args...)
 }
 
+// Forward advances the position of the current token by at most n (does not go beyond len(Input)).
+func (l *Lexer[T]) Forward(n int) {
+	l.pos = min(l.pos+n, len(l.Input))
+}
+
+// MatchRunes returns true when the given runes match with the input at the current position.
+func (l *Lexer[T]) MatchRunes(runes []rune) bool {
+	for i, r := range runes {
+		if l.Peek(i) != r {
+			return false
+		}
+	}
+	return true
+}
+
 // Next advances the cursor and returns the current rune, or EOF.
 func (l *Lexer[T]) Next() rune {
 	if l.Over() {
