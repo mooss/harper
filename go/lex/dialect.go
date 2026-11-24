@@ -18,7 +18,7 @@ type Dialect[T any] struct {
 
 // Scanner builds a scanner for the dialect.
 func (d Dialect[T]) Scanner() ScanFun[T] {
-	return func(l *Lexer[T]) (Token[T], error) {
+	return func(l *Lexer) (Token[T], error) {
 		l.SkipWhitespace(d.Whitespace, d.LineComment)
 		if l.Over() {
 			return Token[T]{}, ErrEndOfInput

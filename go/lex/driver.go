@@ -9,7 +9,7 @@ import (
 // scanner.
 // The error getter should be checked after iteration.
 func TokenIterator[T any](input string, scan ScanFun[T]) (iter.Seq[Token[T]], func() error) {
-	l := &Lexer[T]{Input: []rune(input)}
+	l := &Lexer{Input: []rune(input)}
 	var err error
 	return func(yield func(Token[T]) bool) {
 		if err != nil {
