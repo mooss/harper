@@ -24,7 +24,7 @@ const (
 
 const EOF = -1
 
-var EndOfInput = errors.New("end of input")
+var ErrEndOfInput = errors.New("end of input")
 
 ///////////
 // Lexer //
@@ -114,7 +114,8 @@ func (l *Lexer[T]) SkipWhitespace(isWS func(rune) bool, lineComment rune) {
 			continue
 		}
 		if lineComment != 0 && r == lineComment {
-			for r = l.Next(); r != '\n' && r != '\r' && r != EOF; r = l.Next() {
+			for r = l.Next(); r != '\n' && r != '\r' && r != EOF; {
+				r = l.Next()
 			}
 			l.start = l.pos
 			continue

@@ -18,7 +18,7 @@ func TokenIterator[T any](input string, scan ScanFun[T]) (iter.Seq[Token[T]], fu
 		for {
 			token, scanErr := scan(l)
 			if scanErr != nil {
-				if errors.Is(scanErr, EndOfInput) {
+				if errors.Is(scanErr, ErrEndOfInput) {
 					return
 				}
 				err = scanErr

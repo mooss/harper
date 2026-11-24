@@ -21,7 +21,7 @@ func (d Dialect[T]) Scanner() ScanFun[T] {
 	return func(l *Lexer[T]) (Token[T], error) {
 		l.SkipWhitespace(d.Whitespace, d.LineComment)
 		if l.Over() {
-			return Token[T]{}, EndOfInput
+			return Token[T]{}, ErrEndOfInput
 		}
 		for _, rule := range d.Rules {
 			token, matched, err := rule(l)

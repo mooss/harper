@@ -37,6 +37,7 @@ func Quoted[T any](delimiter, escape rune, unterminated LexicalFailure, typ T) R
 				}
 			case EOF:
 				return Token[T]{}, true, l.Failure(unterminated)
+			default:
 			}
 		}
 	}
