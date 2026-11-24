@@ -1,0 +1,122 @@
+package lex
+
+import (
+	"errors"
+	"fmt"
+)
+
+// Token is a token of type T and its source text.
+type Token[T any] struct {
+	Type  T
+	Value string
+}
+
+// ScanFun scans the lexer's input and returns the next token.
+type ScanFun[T any] func(*Lexer[T]) (Token[T], error)
+
+// LexicalFailure describes why lexing failed.
+type LexicalFailure string
+
+const (
+	InvalidStart         LexicalFailure = "invalid token start"
+	InvalidTokenBoundary LexicalFailure = "invalid token boundary"
+)
+
+const EOF = -1
+
+var EndOfInput = errors.New("end of input")
+
+///////////
+// Lexer //
+
+// Lexer holds the input and cursor positions for a scan.
+type Lexer[T any] struct {
+	Input []rune
+	start int
+	pos   int
+}
+
+// Current returns the text consumed since the start of the current token.
+func (l *Lexer[T]) Current() string {
+	return string(l.Input[l.start:l.pos])
+}
+
+// Failure returns an error describing the current token and advances the token start.
+func (l *Lexer[T]) Failure(reason LexicalFailure) error {
+	token := l.Produce(*new(T))
+	return fmt.Errorf("lexer: %s at %#q", reason, token.Value)
+}
+
+// Failuref returns a formatted error describing the current token and advances the token start.
+func (l *Lexer[T]) Failuref(reason LexicalFailure, msg string, args ...any) error {
+	token := l.Produce(*new(T))
+	args = append([]any{reason, token.Value}, args...)
+	return fmt.Errorf("lexer: %s at %#q: "+msg, args...)
+}
+
+// Next advances the cursor and returns the current rune, or EOF.
+func (l *Lexer[T]) Next() rune {
+	if l.Over() {
+		return EOF
+	}
+	r := l.Input[l.pos]
+	l.pos++
+	return r
+}
+
+// Over reports whether all input has been consumed.
+func (l *Lexer[T]) Over() bool {
+	return l.pos >= len(l.Input)
+}
+
+// Peek returns the rune at the given offset without advancing, or EOF.
+func (l *Lexer[T]) Peek(index int) rune {
+	index += l.pos
+	if index < 0 || index >= len(l.Input) {
+		return EOF
+	}
+	return l.Input[index]
+}
+
+// Pos returns the current position of the cursor.
+func (l *Lexer[T]) Pos() int { return l.pos }
+
+// Produce returns the current token and advances the token start.
+func (l *Lexer[T]) Produce(typ T) Token[T] {
+	token := Token[T]{Type: typ, Value: l.Current()}
+	l.start = l.pos
+	return token
+}
+
+// SkipWhitespace consumes whitespace and line comments (use 0 for no line comment).
+// TODO: turn lineComment into a function?
+func (l *Lexer[T]) SkipWhitespace(isWS func(rune) bool, lineComment rune) {
+	for !l.Over() {
+		r := l.Peek(0)
+		if isWS != nil && isWS(r) {
+			l.Next()
+			l.start = l.pos
+			continue
+		}
+		if lineComment != 0 && r == lineComment {
+			for r = l.Next(); r != '\n' && r != '\r' && r != EOF; r = l.Next() {
+			}
+			l.start = l.pos
+			continue
+		}
+		return
+	}
+}
+
+// Start returns the current start of the cursor.
+func (l *Lexer[T]) Start() int { return l.start }
+
+// SuccessOnBoundary succeeds only when the next rune is a token boundary.
+func (l *Lexer[T]) SuccessOnBoundary(typ T, isBoundary func(rune) bool) (Token[T], error) {
+	next := l.Peek(0)
+	if next != EOF && !isBoundary(next) {
+		l.Next()
+		return Token[T]{}, l.Failuref(InvalidTokenBoundary, "%q is not a boundary character", next)
+	}
+	return l.Produce(typ), nil
+}
