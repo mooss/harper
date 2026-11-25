@@ -1,0 +1,106 @@
+goos: linux
+goarch: amd64
+pkg: github.com/mooss/harper/go/lex
+cpu: AMD Custom APU 0405
+                                   │ benchmarks/lex/02-dfec748.bench │    benchmarks/lex/03-2ebbec4.bench    │
+                                   │             sec/op              │    sec/op     vs base                 │
+LexerSynthetic1K-8                                      30.00µ ± ∞ ¹   29.22µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic64K-8                                     2.016m ± ∞ ¹   1.952m ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic512K-8                                    16.19m ± ∞ ¹   15.64m ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Empty-8                                76.27n ± ∞ ¹   29.03n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceOnly-8                       207.8n ± ∞ ¹   158.7n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SingleSymbol-8                         235.2n ± ∞ ¹   175.9n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SimpleAdd-8                            551.9n ± ∞ ¹   477.6n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/FibDefun-8                             3.269µ ± ∞ ¹   3.123µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LetLambda-8                            2.634µ ± ∞ ¹   2.487µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/QuoteQuasiquote-8                      1.565µ ± ∞ ¹   1.440µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/StringsEscapes-8                       843.2n ± ∞ ¹   757.4n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Comments-8                             1.354µ ± ∞ ¹   1.258µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/DeepNesting-8                          16.96µ ± ∞ ¹   15.83µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LongSymbol-8                           32.45µ ± ∞ ¹   32.62µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyIntegers-8                         398.0µ ± ∞ ¹   384.0µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyStrings-8                          67.08µ ± ∞ ¹   66.47µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceHeavy-8                      804.3n ± ∞ ¹   721.3n ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/4K-8                              125.7µ ± ∞ ¹   121.6µ ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/64K-8                             2.051m ± ∞ ¹   1.974m ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/256K-8                            8.176m ± ∞ ¹   7.766m ± ∞ ¹        ~ (p=1.000 n=1) ²
+geomean                                                 15.64µ         13.83µ        -11.62%
+¹ need >= 6 samples for confidence interval at level 0.95
+² need >= 4 samples to detect a difference at alpha level 0.05
+
+                                   │ benchmarks/lex/02-dfec748.bench │    benchmarks/lex/03-2ebbec4.bench    │
+                                   │               B/s               │      B/s       vs base                │
+LexerSynthetic1K-8                                     34.87Mi ± ∞ ¹   35.81Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerSynthetic64K-8                                    31.01Mi ± ∞ ¹   32.02Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerSynthetic512K-8                                   30.89Mi ± ∞ ¹   31.98Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceOnly-8                      123.9Mi ± ∞ ¹   162.3Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/SingleSymbol-8                        24.33Mi ± ∞ ¹   32.53Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/SimpleAdd-8                           12.09Mi ± ∞ ¹   13.98Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/FibDefun-8                            17.80Mi ± ∞ ¹   18.63Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/LetLambda-8                           18.46Mi ± ∞ ¹   19.56Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/QuoteQuasiquote-8                     16.45Mi ± ∞ ¹   17.88Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/StringsEscapes-8                      61.07Mi ± ∞ ¹   67.99Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/Comments-8                            42.26Mi ± ∞ ¹   45.48Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/DeepNesting-8                         28.84Mi ± ∞ ¹   30.92Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/LongSymbol-8                          120.6Mi ± ∞ ¹   119.9Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyIntegers-8                        52.72Mi ± ∞ ¹   54.64Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyStrings-8                         128.0Mi ± ∞ ¹   129.1Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceHeavy-8                     43.87Mi ± ∞ ¹   48.92Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerThroughputBySize/4K-8                             31.24Mi ± ∞ ¹   32.28Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerThroughputBySize/64K-8                            30.52Mi ± ∞ ¹   31.70Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+LexerThroughputBySize/256K-8                           30.58Mi ± ∞ ¹   32.20Mi ± ∞ ¹       ~ (p=1.000 n=1) ²
+geomean                                                36.61Mi         39.63Mi        +8.25%
+¹ need >= 6 samples for confidence interval at level 0.95
+² need >= 4 samples to detect a difference at alpha level 0.05
+
+                                   │ benchmarks/lex/02-dfec748.bench │   benchmarks/lex/03-2ebbec4.bench    │
+                                   │              B/op               │    B/op      vs base                 │
+LexerSynthetic1K-8                                       72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic64K-8                                      72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic512K-8                                     72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Empty-8                                 72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceOnly-8                        72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SingleSymbol-8                          72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SimpleAdd-8                             72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/FibDefun-8                              72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LetLambda-8                             72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/QuoteQuasiquote-8                       72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/StringsEscapes-8                        72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Comments-8                              72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/DeepNesting-8                           72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LongSymbol-8                            72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyIntegers-8                          72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyStrings-8                           72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceHeavy-8                       72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/4K-8                               72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/64K-8                              72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/256K-8                             72.00 ± ∞ ¹   32.00 ± ∞ ¹        ~ (p=1.000 n=1) ²
+geomean                                                  72.00         32.00        -55.56%
+¹ need >= 6 samples for confidence interval at level 0.95
+² need >= 4 samples to detect a difference at alpha level 0.05
+
+                                   │ benchmarks/lex/02-dfec748.bench │   benchmarks/lex/03-2ebbec4.bench    │
+                                   │            allocs/op            │  allocs/op   vs base                 │
+LexerSynthetic1K-8                                       3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic64K-8                                      3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerSynthetic512K-8                                     3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Empty-8                                 3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceOnly-8                        3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SingleSymbol-8                          3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/SimpleAdd-8                             3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/FibDefun-8                              3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LetLambda-8                             3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/QuoteQuasiquote-8                       3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/StringsEscapes-8                        3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/Comments-8                              3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/DeepNesting-8                           3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/LongSymbol-8                            3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyIntegers-8                          3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/ManyStrings-8                           3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerHandCrafted/WhitespaceHeavy-8                       3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/4K-8                               3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/64K-8                              3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+LexerThroughputBySize/256K-8                             3.000 ± ∞ ¹   1.000 ± ∞ ¹        ~ (p=1.000 n=1) ²
+geomean                                                  3.000         1.000        -66.67%
+¹ need >= 6 samples for confidence interval at level 0.95
+² need >= 4 samples to detect a difference at alpha level 0.05

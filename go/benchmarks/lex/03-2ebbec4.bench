@@ -1,0 +1,26 @@
+goos: linux
+goarch: amd64
+pkg: github.com/mooss/harper/go/lex
+cpu: AMD Custom APU 0405
+BenchmarkLexerSynthetic1K-8        	   80560	     29218 ns/op	  37.55 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerSynthetic64K-8       	    1242	   1952025 ns/op	  33.58 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerSynthetic512K-8      	     153	  15638312 ns/op	  33.53 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/Empty-8  	81440491	        29.03 ns/op	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/WhitespaceOnly-8         	15147816	       158.7 ns/op	 170.18 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/SingleSymbol-8           	13544438	       175.9 ns/op	  34.11 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/SimpleAdd-8              	 5020776	       477.6 ns/op	  14.66 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/FibDefun-8               	  778620	      3123 ns/op	  19.53 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/LetLambda-8              	  939861	      2487 ns/op	  20.51 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/QuoteQuasiquote-8        	 1675617	      1440 ns/op	  18.75 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/StringsEscapes-8         	 3176340	       757.4 ns/op	  71.29 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/Comments-8               	 1908213	      1258 ns/op	  47.69 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/DeepNesting-8            	  156892	     15826 ns/op	  32.42 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/LongSymbol-8             	   69302	     32618 ns/op	 125.76 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/ManyIntegers-8           	    6232	    383987 ns/op	  57.29 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/ManyStrings-8            	   36854	     66473 ns/op	 135.39 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerHandCrafted/WhitespaceHeavy-8        	 3312774	       721.3 ns/op	  51.30 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerThroughputBySize/4K-8                	   19707	    121637 ns/op	  33.85 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerThroughputBySize/64K-8               	    1233	   1974385 ns/op	  33.24 MB/s	      32 B/op	       1 allocs/op
+BenchmarkLexerThroughputBySize/256K-8              	     308	   7765930 ns/op	  33.76 MB/s	      32 B/op	       1 allocs/op
+PASS
+ok  	github.com/mooss/harper/go/lex	60.444s
