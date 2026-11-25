@@ -1,5 +1,7 @@
 package lex
 
+import "github.com/mooss/harper/go/core"
+
 // Dialect declares how to tokenize a Lisp dialect.
 type Dialect[T any] struct {
 	// Whitespace returns true when its argument is whitespace.
@@ -18,21 +20,21 @@ type Dialect[T any] struct {
 
 // Scanner builds a scanner for the dialect.
 func (d Dialect[T]) Scanner() ScanFun[T] {
-	return func(l *Lexer) (Token[T], error) {
+	return func(l *Lexer) (core.Token[T], error) {
 		l.SkipWhitespace(d.Whitespace, d.LineComment)
 		if l.Over() {
-			return Token[T]{}, ErrEndOfInput
+			return core.Token[T]{}, ErrEndOfInput
 		}
 		for _, rule := range d.Rules {
 			token, matched, err := rule(l)
 			if err != nil {
-				return Token[T]{}, err
+				return core.Token[T]{}, err
 			}
 			if matched {
 				return token, nil
 			}
 		}
 		l.Next()
-		return Token[T]{}, l.Failure(InvalidStart)
+		return core.Token[T]{}, l.Failure(InvalidStart)
 	}
 }

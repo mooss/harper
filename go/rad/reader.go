@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mooss/harper/go/lex"
+	"github.com/mooss/harper/go/core"
 )
 
 type Reader[K comparable, V any] struct {
-	tokens []lex.Token[K]
+	tokens []core.Token[K]
 	pos    int
 	spec   *Spec[K, V]
 }
 
-func (s *Spec[K, V]) NewReader(tokens []lex.Token[K]) *Reader[K, V] {
+func (s *Spec[K, V]) NewReader(tokens []core.Token[K]) *Reader[K, V] {
 	return &Reader[K, V]{tokens: tokens, pos: 0, spec: s}
 }
 
@@ -24,7 +24,7 @@ func (r *Reader[K, V]) Done() bool {
 	return r.pos >= len(r.tokens)
 }
 
-func (r *Reader[K, V]) Next() lex.Token[K] {
+func (r *Reader[K, V]) Next() core.Token[K] {
 	t := r.Peek()
 	if r.pos < len(r.tokens) {
 		r.pos++
@@ -32,9 +32,9 @@ func (r *Reader[K, V]) Next() lex.Token[K] {
 	return t
 }
 
-func (r *Reader[K, V]) Peek() lex.Token[K] {
+func (r *Reader[K, V]) Peek() core.Token[K] {
 	if r.Done() {
-		var zero lex.Token[K]
+		var zero core.Token[K]
 		return zero
 	}
 	return r.tokens[r.pos]
@@ -46,7 +46,7 @@ func (r *Reader[K, V]) ReadForm() (V, error) {
 		return zero, r.erf("%w", io.EOF)
 	}
 	t := r.Next()
-	for _, fn := range []func(lex.Token[K]) (V, bool, error){r.readPrefix, r.readCompound} {
+	for _, fn := range []func(core.Token[K]) (V, bool, error){r.readPrefix, r.readCompound} {
 		if v, handled, err := fn(t); err != nil {
 			return zero, err
 		} else if handled {
@@ -56,7 +56,7 @@ func (r *Reader[K, V]) ReadForm() (V, error) {
 	return r.readAtom(t)
 }
 
-func (r *Reader[K, V]) Rest() []lex.Token[K] {
+func (r *Reader[K, V]) Rest() []core.Token[K] {
 	if r.pos >= len(r.tokens) {
 		return nil
 	}
@@ -66,7 +66,7 @@ func (r *Reader[K, V]) Rest() []lex.Token[K] {
 /////////////////////
 // Private methods //
 
-func (r *Reader[K, V]) buildAtom(t lex.Token[K]) (V, error) {
+func (r *Reader[K, V]) buildAtom(t core.Token[K]) (V, error) {
 	var zero V
 	if atom, ok := r.spec.atoms[t.Type]; ok {
 		v, err := atom(t)
@@ -82,7 +82,7 @@ func (*Reader[K, V]) erf(format string, a ...any) error {
 	return fmt.Errorf("reader: "+format, a...)
 }
 
-func (r *Reader[K, V]) readAtom(t lex.Token[K]) (V, error) {
+func (r *Reader[K, V]) readAtom(t core.Token[K]) (V, error) {
 	var zero V
 
 	if r.spec.delimKinds[t.Type] {
@@ -99,7 +99,7 @@ func (r *Reader[K, V]) readAtom(t lex.Token[K]) (V, error) {
 	return r.buildAtom(t)
 }
 
-func (r *Reader[K, V]) readCompound(t lex.Token[K]) (V, bool, error) {
+func (r *Reader[K, V]) readCompound(t core.Token[K]) (V, bool, error) {
 	var zero V
 	open, ok := r.spec.opens[token[K]{t.Type, t.Value}]
 	if !ok {
@@ -116,7 +116,7 @@ func (r *Reader[K, V]) readCompound(t lex.Token[K]) (V, bool, error) {
 	return r.wrap(open.build(forms))
 }
 
-func (r *Reader[K, V]) readPrefix(t lex.Token[K]) (V, bool, error) {
+func (r *Reader[K, V]) readPrefix(t core.Token[K]) (V, bool, error) {
 	var zero V
 	expand, ok := r.spec.prefixes[token[K]{t.Type, t.Value}]
 	if !ok {

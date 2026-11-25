@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mooss/harper/go/lex"
+	"github.com/mooss/harper/go/core"
 )
 
-func (s *Spec[K, V]) ParseOne(tokens []lex.Token[K]) (V, error) {
+func (s *Spec[K, V]) ParseOne(tokens []core.Token[K]) (V, error) {
 	r := s.NewReader(tokens)
 	v, err := r.ReadForm()
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *Spec[K, V]) ParseOne(tokens []lex.Token[K]) (V, error) {
 	return v, nil
 }
 
-func (s *Spec[K, V]) ParseAll(tokens []lex.Token[K]) ([]V, error) {
+func (s *Spec[K, V]) ParseAll(tokens []core.Token[K]) ([]V, error) {
 	r := s.NewReader(tokens)
 	var out []V
 	for {

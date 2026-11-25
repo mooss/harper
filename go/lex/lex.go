@@ -3,16 +3,12 @@ package lex
 import (
 	"errors"
 	"fmt"
+
+	"github.com/mooss/harper/go/core"
 )
 
-// Token is a token of type T and its source text.
-type Token[T any] struct {
-	Type  T
-	Value string
-}
-
 // ScanFun scans the lexer's input and returns the next token.
-type ScanFun[T any] func(*Lexer) (Token[T], error)
+type ScanFun[T any] func(*Lexer) (core.Token[T], error)
 
 // LexicalFailure describes why lexing failed.
 type LexicalFailure string
@@ -97,8 +93,8 @@ func (l *Lexer) Peek(index int) rune {
 func (l *Lexer) Pos() int { return l.pos }
 
 // Produce returns the current token and advances the token start.
-func (l *Lexer) Produce[T any](typ T) Token[T] {
-	token := Token[T]{Type: typ, Value: l.Current()}
+func (l *Lexer) Produce[T any](typ T) core.Token[T] {
+	token := core.Token[T]{Type: typ, Value: l.Current()}
 	l.start = l.pos
 	return token
 }
@@ -127,11 +123,12 @@ func (l *Lexer) SkipWhitespace(isWS func(rune) bool, lineComment rune) {
 func (l *Lexer) Start() int { return l.start }
 
 // SuccessOnBoundary succeeds only when the next rune is a token boundary.
-func (l *Lexer) SuccessOnBoundary[T any](typ T, isBoundary func(rune) bool) (Token[T], error) {
+func (l *Lexer) SuccessOnBoundary[T any](typ T, isBoundary func(rune) bool) (core.Token[T], error) {
 	next := l.Peek(0)
 	if next != EOF && !isBoundary(next) {
 		l.Next()
-		return Token[T]{}, l.Failuref(InvalidTokenBoundary, "%q is not a boundary character", next)
+		msg := "%q is not a boundary character"
+		return core.Token[T]{}, l.Failuref(InvalidTokenBoundary, msg, next)
 	}
 	return l.Produce(typ), nil
 }

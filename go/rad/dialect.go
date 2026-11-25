@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/mooss/harper/go/lex"
+	"github.com/mooss/harper/go/core"
 )
 
 type ruleOp int
@@ -23,7 +23,7 @@ type Rule[K comparable, V any] struct {
 	close  string
 	sigil  string
 	arity  int
-	atomFn func(lex.Token[K]) (V, error)
+	atomFn func(core.Token[K]) (V, error)
 	build  func([]V) (V, error)
 	expand func(V) (V, error)
 }
@@ -46,7 +46,7 @@ type token[Kind comparable] struct {
 }
 
 type Spec[K comparable, V any] struct {
-	atoms       map[K]func(lex.Token[K]) (V, error)
+	atoms       map[K]func(core.Token[K]) (V, error)
 	opens       map[token[K]]openSpec[K, V]
 	prefixes    map[token[K]]func(V) (V, error)
 	delimKinds  map[K]bool
@@ -55,7 +55,7 @@ type Spec[K comparable, V any] struct {
 }
 
 // Atom defines an atomic value rule for kind using fn to convert a token.
-func Atom[K comparable, V any](kind K, fn func(lex.Token[K]) (V, error)) Rule[K, V] {
+func Atom[K comparable, V any](kind K, fn func(core.Token[K]) (V, error)) Rule[K, V] {
 	return Rule[K, V]{op: opAtom, kind: kind, atomFn: fn}
 }
 
@@ -83,7 +83,7 @@ func Prefix[K comparable, V any](kind K, sigil string, expand func(V) (V, error)
 //revive:disable:cognitive-complexity,cyclomatic,line-length-limit
 func (d Dialect[K, V]) Compile() (*Spec[K, V], error) {
 	res := &Spec[K, V]{
-		atoms:       make(map[K]func(lex.Token[K]) (V, error)),
+		atoms:       make(map[K]func(core.Token[K]) (V, error)),
 		opens:       make(map[token[K]]openSpec[K, V]),
 		prefixes:    make(map[token[K]]func(V) (V, error)),
 		delimKinds:  make(map[K]bool),
