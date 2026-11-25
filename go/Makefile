@@ -1,4 +1,4 @@
-.PHONY: lint test
+.PHONY: lint test fmt bench
 
 lint:
 	@golangci-lint run ./...\
@@ -11,3 +11,6 @@ test:
 
 fmt:
 	@go fmt ./...
+
+bench:
+	@go test -bench=. -benchmem -benchtime 2s ./...
