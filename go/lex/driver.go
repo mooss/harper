@@ -7,28 +7,22 @@ import (
 	"github.com/mooss/harper/go/core"
 )
 
-// TokenIterator builds an iterable sequence of tokens and an error getter from input data and a
-// scanner.
-// The error getter should be checked after iteration.
-func TokenIterator[T any](input string, scan ScanFun[T]) (iter.Seq[core.Token[T]], func() error) {
+// TokenIterator builds an iterable sequence of tokens.
+func TokenIterator[T any](input string, scan ScanFun[T]) iter.Seq2[core.Token[T], error] {
 	l := NewLexer(input)
-	var err error
-	return func(yield func(core.Token[T]) bool) {
-		if err != nil {
-			return
-		}
+	return func(yield func(core.Token[T], error) bool) {
 		for {
-			token, scanErr := scan(l)
-			if scanErr != nil {
-				if errors.Is(scanErr, ErrEndOfInput) {
+			token, err := scan(l)
+			if err != nil {
+				if errors.Is(err, ErrEndOfInput) {
 					return
 				}
-				err = scanErr
+				yield(core.Token[T]{}, err)
 				return
 			}
-			if !yield(token) {
+			if !yield(token, nil) {
 				return
 			}
 		}
-	}, func() error { return err }
+	}
 }

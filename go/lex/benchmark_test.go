@@ -229,13 +229,17 @@ func lispBenchDrain(b *testing.B, input string) {
 	scan := lispBenchDialect.Scanner()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		seq, errFn := TokenIterator(input, scan)
+		seq := TokenIterator(input, scan)
 		n := 0
-		for range seq {
+		errs := []error{}
+		for _, err := range seq {
+			if err != nil {
+				errs = append(errs, err)
+			}
 			n++
 		}
-		if err := errFn(); err != nil {
-			b.Fatalf("scan failed: %v", err)
+		if len(errs) > 0 {
+			b.Fatalf("scan failed: %v", errs)
 		}
 		lispBenchSink += n
 	}
