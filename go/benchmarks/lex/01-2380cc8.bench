@@ -1,0 +1,28 @@
+?   	github.com/mooss/harper/go/core	[no test files]
+goos: linux
+goarch: amd64
+pkg: github.com/mooss/harper/go/lex
+cpu: AMD Custom APU 0405
+BenchmarkLexerSynthetic1K-8        	   56967	     41528 ns/op	  26.42 MB/s	    6872 B/op	     249 allocs/op
+BenchmarkLexerSynthetic64K-8       	     871	   2734275 ns/op	  23.97 MB/s	  390328 B/op	   16319 allocs/op
+BenchmarkLexerSynthetic512K-8      	     100	  21901850 ns/op	  23.94 MB/s	 3071486 B/op	  131205 allocs/op
+BenchmarkLexerHandCrafted/Empty-8  	26101994	        91.87 ns/op	      88 B/op	       3 allocs/op
+BenchmarkLexerHandCrafted/WhitespaceOnly-8         	 9867134	       243.8 ns/op	 110.76 MB/s	     200 B/op	       4 allocs/op
+BenchmarkLexerHandCrafted/SingleSymbol-8           	 7092230	       336.5 ns/op	  17.83 MB/s	     128 B/op	       5 allocs/op
+BenchmarkLexerHandCrafted/SimpleAdd-8              	 3376588	       713.4 ns/op	   9.81 MB/s	     140 B/op	       9 allocs/op
+BenchmarkLexerHandCrafted/FibDefun-8               	  546357	      4276 ns/op	  14.26 MB/s	     504 B/op	      38 allocs/op
+BenchmarkLexerHandCrafted/LetLambda-8              	  647276	      3537 ns/op	  14.42 MB/s	     440 B/op	      33 allocs/op
+BenchmarkLexerHandCrafted/QuoteQuasiquote-8        	 1000000	      2070 ns/op	  13.05 MB/s	     280 B/op	      20 allocs/op
+BenchmarkLexerHandCrafted/StringsEscapes-8         	 1670964	      1432 ns/op	  37.71 MB/s	     392 B/op	      11 allocs/op
+BenchmarkLexerHandCrafted/Comments-8               	 1330294	      1795 ns/op	  33.42 MB/s	     384 B/op	      16 allocs/op
+BenchmarkLexerHandCrafted/DeepNesting-8            	   74752	     32232 ns/op	  15.92 MB/s	    4444 B/op	     517 allocs/op
+BenchmarkLexerHandCrafted/LongSymbol-8             	   44533	     53874 ns/op	  76.14 MB/s	   23400 B/op	       8 allocs/op
+BenchmarkLexerHandCrafted/ManyIntegers-8           	    4275	    555253 ns/op	  39.62 MB/s	  122200 B/op	    2004 allocs/op
+BenchmarkLexerHandCrafted/ManyStrings-8            	   18915	    126298 ns/op	  71.26 MB/s	   53048 B/op	     504 allocs/op
+BenchmarkLexerHandCrafted/WhitespaceHeavy-8        	 2393294	      1007 ns/op	  36.74 MB/s	     280 B/op	       9 allocs/op
+BenchmarkLexerThroughputBySize/4K-8                	   13796	    173561 ns/op	  23.72 MB/s	   26264 B/op	    1036 allocs/op
+BenchmarkLexerThroughputBySize/64K-8               	     843	   2811745 ns/op	  23.34 MB/s	  392666 B/op	   16604 allocs/op
+BenchmarkLexerThroughputBySize/256K-8              	     214	  11144890 ns/op	  23.53 MB/s	 1540244 B/op	   65640 allocs/op
+PASS
+ok  	github.com/mooss/harper/go/lex	61.072s
+?   	github.com/mooss/harper/go/rad	[no test files]
