@@ -32,10 +32,9 @@ func lispBenchIsSymbolRest(r rune) bool {
 	return unicode.IsLetter(r) || IsDigitASCII(r) || strings.ContainsRune("!$%&*+-./:<=>?@^_~", r)
 }
 
-// lispBenchDialect is a plausible Lisp dialect exercising every lexer
-// primitive: single-char tokens, quoted strings with escapes, signed
-// integers with boundary checks, symbols with start/rest predicates,
-// whitespace skipping and line comments.
+// lispBenchDialect is a plausible Lisp dialect exercising every lexer primitive: single-char
+// tokens, quoted strings with escapes, signed integers with boundary checks, symbols with
+// start/rest predicates, whitespace skipping and line comments.
 var lispBenchDialect = Dialect[lispBenchKind]{
 	Whitespace:  unicode.IsSpace,
 	LineComment: ';',
@@ -82,10 +81,9 @@ func lispBenchRandomSymbol(rng *rand.Rand) string {
 		}
 	}
 	s := sb.String()
-	// Avoid a signed-int prefix (e.g. "-1j"): SignedInt would match the
-	// leading sign+digits then fail on the invalid token boundary
-	// instead of falling through to Symbol. Break the prefix so the
-	// whole text lexes as a symbol.
+	// Avoid a signed-int prefix (e.g. "-1j"): SignedInt would match the leading sign+digits then
+	// fail on the invalid token boundary instead of falling through to Symbol.
+	// Break the prefix so the whole text lexes as a symbol.
 	if len(s) >= 2 && (s[0] == '+' || s[0] == '-') && s[1] >= '0' && s[1] <= '9' {
 		return s[:1] + "a" + s[1:]
 	}
@@ -163,10 +161,10 @@ func lispBenchRandomExpr(rng *rand.Rand, depth int) string {
 	return sb.String()
 }
 
-// GeneratePseudorandomLisp generates deterministic, plausible pseudorandom
-// Lisp code of approximately approxBytes bytes using seed for reproducibility.
-// Output mixes nested forms, atoms, strings with escapes, varied whitespace
-// and line comments so benchmarks exercise all lexer paths.
+// GeneratePseudorandomLisp generates deterministic, plausible pseudorandomLisp code of
+// approximately approxBytes bytes using seed for reproducibility.
+// Output mixes nested forms, atoms, strings with escapes, varied whitespace and line comments so
+// benchmarks exercise all lexer paths.
 func GeneratePseudorandomLisp(seed int64, approxBytes int) string {
 	rng := rand.New(rand.NewSource(seed))
 	var sb strings.Builder
@@ -190,9 +188,9 @@ func GeneratePseudorandomLisp(seed int64, approxBytes int) string {
 	return sb.String()
 }
 
-// HandCraftedLispInputs is a set of hand-crafted sequences covering edge cases:
-// empty input, whitespace, single tokens, classic forms, escapes, comments,
-// deep nesting, very long symbols and dense numeric/string runs.
+// HandCraftedLispInputs is a set of hand-crafted sequences covering edge cases: empty input,
+// whitespace, single tokens, classic forms, escapes, comments, deep nesting, very long symbols and
+// dense numeric/string runs.
 var HandCraftedLispInputs = []struct {
 	Name  string
 	Input string
