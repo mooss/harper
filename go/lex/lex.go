@@ -3,6 +3,7 @@ package lex
 import (
 	"errors"
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/mooss/harper/go/core"
 )
@@ -27,14 +28,19 @@ var ErrEndOfInput = errors.New("end of input")
 
 // Lexer holds the input and cursor positions for a scan.
 type Lexer struct {
-	Input []rune
+	input string
 	start int
 	pos   int
 }
 
+// NewLexer returns a Lexer scanning the given input.
+func NewLexer(input string) *Lexer {
+	return &Lexer{input: input}
+}
+
 // Current returns the text consumed since the start of the current token.
 func (l *Lexer) Current() string {
-	return string(l.Input[l.start:l.pos])
+	return l.input[l.start:l.pos]
 }
 
 // Failure returns an error describing the current token and advances the token start.
@@ -50,9 +56,12 @@ func (l *Lexer) Failuref(reason LexicalFailure, msg string, args ...any) error {
 	return fmt.Errorf("lexer: %s at %#q: "+msg, args...)
 }
 
-// Forward advances the position of the current token by at most n (does not go beyond len(Input)).
+// Forward advances the position of the current token by at most n runes (does not go beyond
+// len(input)).
 func (l *Lexer) Forward(n int) {
-	l.pos = min(l.pos+n, len(l.Input))
+	for i := 0; i < n && !l.Over(); i++ {
+		l.Next()
+	}
 }
 
 // MatchRunes returns true when the given runes match with the input at the current position.
@@ -70,23 +79,32 @@ func (l *Lexer) Next() rune {
 	if l.Over() {
 		return EOF
 	}
-	r := l.Input[l.pos]
-	l.pos++
+	r, size := utf8.DecodeRuneInString(l.input[l.pos:])
+	l.pos += size
 	return r
 }
 
 // Over reports whether all input has been consumed.
 func (l *Lexer) Over() bool {
-	return l.pos >= len(l.Input)
+	return l.pos >= len(l.input)
 }
 
 // Peek returns the rune at the given offset without advancing, or EOF.
 func (l *Lexer) Peek(index int) rune {
-	index += l.pos
-	if index < 0 || index >= len(l.Input) {
+	if index < 0 {
 		return EOF
 	}
-	return l.Input[index]
+	offset := l.pos
+	for i := 0; ; i++ {
+		if offset >= len(l.input) {
+			return EOF
+		}
+		r, size := utf8.DecodeRuneInString(l.input[offset:])
+		if i == index {
+			return r
+		}
+		offset += size
+	}
 }
 
 // Pos returns the current position of the cursor.
