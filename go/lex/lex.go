@@ -17,6 +17,7 @@ type LexicalFailure string
 const (
 	InvalidStart         LexicalFailure = "invalid token start"
 	InvalidTokenBoundary LexicalFailure = "invalid token boundary"
+	UnbalancedQD         LexicalFailure = "unbalanced double quote"
 )
 
 const EOF = -1

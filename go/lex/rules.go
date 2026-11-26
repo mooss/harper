@@ -24,7 +24,7 @@ func AnyOf[T any](chars string, typ T) Rule[T] {
 
 // Quoted matches a token quoted between delimiter, honoring escape characters and failing with
 // unterminated.
-func Quoted[T any](delimiter, escape rune, unterminated LexicalFailure, typ T) Rule[T] {
+func Quoted[T any](delimiter, escape rune, typ T) Rule[T] {
 	return func(l *Lexer) (core.Token[T], bool, error) {
 		if l.Peek(0) != delimiter {
 			return core.Token[T]{}, false, nil
@@ -36,10 +36,10 @@ func Quoted[T any](delimiter, escape rune, unterminated LexicalFailure, typ T) R
 				return l.Produce(typ), true, nil
 			case escape:
 				if l.Next() == EOF {
-					return core.Token[T]{}, true, l.Failure(unterminated)
+					return core.Token[T]{}, true, l.Failure(UnbalancedQD)
 				}
 			case EOF:
-				return core.Token[T]{}, true, l.Failure(unterminated)
+				return core.Token[T]{}, true, l.Failure(UnbalancedQD)
 			default:
 			}
 		}

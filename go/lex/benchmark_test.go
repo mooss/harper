@@ -42,7 +42,7 @@ var lispBenchDialect = Dialect[lispBenchKind]{
 		AnyOf("(", lispBenchLParen),
 		AnyOf(")", lispBenchRParen),
 		AnyOf("'`,", lispBenchQuote),
-		Quoted('"', '\\', InvalidTokenBoundary, lispBenchString),
+		Quoted('"', '\\', lispBenchString),
 		SignedInt(IsDigitASCII, lispBenchIsBoundary, lispBenchNumber),
 		Symbol(lispBenchIsSymbolStart, lispBenchIsSymbolRest, lispBenchIsBoundary, lispBenchSymbol),
 	},
