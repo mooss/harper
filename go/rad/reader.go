@@ -7,6 +7,7 @@ import (
 	"github.com/mooss/harper/go/core"
 )
 
+// Reader constructs Lisp values from tokens.
 type Reader[K comparable, V any] struct {
 	tokens []core.Token[K]
 	pos    int
@@ -20,10 +21,12 @@ func (s *Spec[K, V]) NewReader(tokens []core.Token[K]) *Reader[K, V] {
 //////////////////////
 // Public interface //
 
+// Done returns true when all the input has been read.
 func (r *Reader[K, V]) Done() bool {
 	return r.pos >= len(r.tokens)
 }
 
+// Next returns the next token (zero when exhausted) and advances the input.
 func (r *Reader[K, V]) Next() core.Token[K] {
 	t := r.Peek()
 	if r.pos < len(r.tokens) {
@@ -32,6 +35,7 @@ func (r *Reader[K, V]) Next() core.Token[K] {
 	return t
 }
 
+// Peek returns the next token (zero when exhausted) without advancing the input.
 func (r *Reader[K, V]) Peek() core.Token[K] {
 	if r.Done() {
 		var zero core.Token[K]
@@ -40,13 +44,18 @@ func (r *Reader[K, V]) Peek() core.Token[K] {
 	return r.tokens[r.pos]
 }
 
+func slc[T any](args ...T) []T { return args }
+
+// ReadForm constructs the next type from the input tokens, after ensuring that there are tokens
+// left to read.
+// Returns an error wrapping io.EOF when there are no more tokens left to read.
 func (r *Reader[K, V]) ReadForm() (V, error) {
 	var zero V
 	if r.Done() {
 		return zero, r.erf("%w", io.EOF)
 	}
 	t := r.Next()
-	for _, fn := range []func(core.Token[K]) (V, bool, error){r.readPrefix, r.readCompound} {
+	for _, fn := range slc(r.readPrefix, r.readCompound) {
 		if v, handled, err := fn(t); err != nil {
 			return zero, err
 		} else if handled {
@@ -56,6 +65,7 @@ func (r *Reader[K, V]) ReadForm() (V, error) {
 	return r.readAtom(t)
 }
 
+// Rest returns all the tokens that are yet to be read.
 func (r *Reader[K, V]) Rest() []core.Token[K] {
 	if r.pos >= len(r.tokens) {
 		return nil
@@ -78,6 +88,7 @@ func (r *Reader[K, V]) buildAtom(t core.Token[K]) (V, error) {
 	return zero, r.erf("unexpected token %q", t.Value)
 }
 
+// erf returns a reader error formatted with msg and args.
 func (*Reader[K, V]) erf(format string, a ...any) error {
 	return fmt.Errorf("reader: "+format, a...)
 }
@@ -99,6 +110,7 @@ func (r *Reader[K, V]) readAtom(t core.Token[K]) (V, error) {
 	return r.buildAtom(t)
 }
 
+// readCompound dispatches a read delimiter to the appropriate read* method.
 func (r *Reader[K, V]) readCompound(t core.Token[K]) (V, bool, error) {
 	var zero V
 	open, ok := r.spec.opens[token[K]{t.Type, t.Value}]
@@ -132,14 +144,16 @@ func (r *Reader[K, V]) readPrefix(t core.Token[K]) (V, bool, error) {
 	return r.wrap(expand(n))
 }
 
-func (r *Reader[K, V]) readSequence(until string, kind K) ([]V, error) {
+// readSequence constructs a sequence type from the remaining input tokens (assumes that the opening
+// delimiter has already been consumed).
+func (r *Reader[K, V]) readSequence(untilValue string, untilType K) ([]V, error) {
 	var res []V
 	for {
 		if r.Done() {
-			return nil, r.erf("unbalanced expression (missing %q)", until)
+			return nil, r.erf("unbalanced expression (missing %q)", untilValue)
 		}
 		p := r.Peek()
-		if p.Type == kind && p.Value == until {
+		if p.Type == untilType && p.Value == untilValue {
 			r.Next()
 			break
 		}
@@ -152,6 +166,7 @@ func (r *Reader[K, V]) readSequence(until string, kind K) ([]V, error) {
 	return res, nil
 }
 
+// wrap wraps err into a reader error.
 func (r *Reader[K, V]) wrap(v V, err error) (V, bool, error) {
 	if err != nil {
 		var zero V

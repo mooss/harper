@@ -14,3 +14,6 @@ fmt:
 
 bench:
 	@python3 scripts/bench.py lex
+
+update-bagend:
+	@go get github.com/mooss/bagend && go mod tidy
