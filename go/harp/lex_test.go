@@ -1,28 +1,29 @@
 //revive:disable:line-length-limit
-package harp
+package harp_test
 
 import (
 	"testing"
 
 	"github.com/mooss/bagend/go/assert"
+	"github.com/mooss/harper/go/harp"
 )
 
-func mustTokenize(a assert.A, program string) []Token {
+func mustTokenize(a assert.A, program string) []harp.Token {
 	a.Helper()
-	return a.Must(Tokenize(program))
+	return a.Must(harp.Tokenize(program))
 }
 
-type ic = assert.Case[string, struct{}] // Input case.
-type tc = assert.Case[string, []Token]  // Token case.
-type ec = assert.Case[string, string]   // Error case.
+type ic = assert.Case[string, struct{}]     // Input case.
+type tc = assert.Case[string, []harp.Token] // Token case.
+type ec = assert.Case[string, string]       // Error case.
 
 // Token utilities to reduce boilerplate.
-func del(v string) Token         { return Token{Type: KindDelimiter, Value: v} }
-func sym(v string) Token         { return Token{Type: KindSymbol, Value: v} }
-func num(v string) Token         { return Token{Type: KindInt, Value: v} }
-func str(v string) Token         { return Token{Type: KindDQS, Value: v} }
-func sig(v string) Token         { return Token{Type: KindSigil, Value: v} }
-func toks(args ...Token) []Token { return args }
+func del(v string) harp.Token              { return harp.Token{Type: harp.KindDelimiter, Value: v} }
+func sym(v string) harp.Token              { return harp.Token{Type: harp.KindSymbol, Value: v} }
+func num(v string) harp.Token              { return harp.Token{Type: harp.KindInt, Value: v} }
+func str(v string) harp.Token              { return harp.Token{Type: harp.KindDQS, Value: v} }
+func sig(v string) harp.Token              { return harp.Token{Type: harp.KindSigil, Value: v} }
+func toks(args ...harp.Token) []harp.Token { return args }
 
 func TestTokenizeEmpty(t *testing.T) {
 	a := assert.New(t)
@@ -153,7 +154,7 @@ func TestTokenizeStrings(t *testing.T) {
 func TestTokenizeErrors(t *testing.T) {
 	a := assert.New(t)
 	a.RunCases("lexical failures", func(a assert.A, c ec) {
-		_, err := Tokenize(c.Input)
+		_, err := harp.Tokenize(c.Input)
 		if c.Want == "" {
 			a.NoError(err)
 		} else {
@@ -185,19 +186,19 @@ func TestTokenizeErrors(t *testing.T) {
 	// that digits never produce invalid start.
 	a.Run("digits are ints not errors", func(a assert.A) {
 		for _, tc := range []string{"0", "1", "9", "+1", "-1"} {
-			_, err := Tokenize(tc)
+			_, err := harp.Tokenize(tc)
 			a.NoError(err)
 		}
 	})
 
 	a.Run("error mentions offending text", func(a assert.A) {
-		_, err := Tokenize("#oops")
+		_, err := harp.Tokenize("#oops")
 		a.ErrorContains(err, "invalid token start")
 		a.StringContains(err.Error(), "#")
 	})
 
 	a.Run("boundary error mentions char", func(a assert.A) {
-		_, err := Tokenize("12x")
+		_, err := harp.Tokenize("12x")
 		a.ErrorContains(err, "invalid token boundary")
 	})
 }
@@ -244,7 +245,7 @@ func TestTokenizePrograms(t *testing.T) {
 
 	a.Run("token types in order", func(a assert.A) {
 		got := mustTokenize(a, "(foo 123 \"bar\" 'baz)")
-		wantTypes := []Kind{KindDelimiter, KindSymbol, KindInt, KindDQS, KindSigil, KindSymbol, KindDelimiter}
+		wantTypes := []harp.Kind{harp.KindDelimiter, harp.KindSymbol, harp.KindInt, harp.KindDQS, harp.KindSigil, harp.KindSymbol, harp.KindDelimiter}
 		a.Equal(len(got), len(wantTypes))
 		for i, w := range wantTypes {
 			a.Equal(got[i].Type, w)
