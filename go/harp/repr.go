@@ -18,21 +18,28 @@ func Repr(ast any) (string, error) {
 	return sb.String(), nil
 }
 
+//revive:disable:cyclomatic
 func writeRepr(sb *strings.Builder, ast any) error {
-	switch typed := ast.(type) {
+	switch node := ast.(type) {
 	case typ.Bool:
-		sb.WriteString(strconv.FormatBool(bool(typed)))
+		sb.WriteString(strconv.FormatBool(bool(node)))
+	case typ.Builtin:
+		sb.WriteString("<builtin function>")
+	case typ.Closure:
+		sb.WriteString("<function>")
 	case typ.Int:
-		sb.WriteString(strconv.FormatInt(int64(typed), 10))
+		sb.WriteString(strconv.FormatInt(int64(node), 10))
 	case typ.Keyword:
 		sb.WriteByte(':')
-		sb.WriteString(string(typed))
+		sb.WriteString(string(node))
 	case typ.List:
-		return writeSliceRepr(sb, writeRepr, typed, '(', ' ', ')')
+		return writeSliceRepr(sb, writeRepr, node, '(', ' ', ')')
 	case typ.String:
-		sb.WriteString(lib.Quote(string(typed)))
+		sb.WriteString(lib.Quote(string(node)))
+	case typ.Special:
+		sb.WriteString("<internal special form>")
 	case typ.Symbol:
-		sb.WriteString(string(typed))
+		sb.WriteString(string(node))
 	default:
 		return fmt.Errorf("repr: unsupported type %#T", ast)
 	}

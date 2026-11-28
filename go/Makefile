@@ -1,4 +1,13 @@
-.PHONY: lint test fmt bench
+.PHONY: lint test fmt bench update-bagend
+
+bench:
+	@python3 scripts/bench.py lex
+
+fmt:
+	@go fmt ./...
+
+install:
+	@go install ./harp/harp
 
 lint:
 	@golangci-lint run ./...\
@@ -8,12 +17,6 @@ lint:
 
 test:
 	@go test ./...
-
-fmt:
-	@go fmt ./...
-
-bench:
-	@python3 scripts/bench.py lex
 
 update-bagend:
 	@go get github.com/mooss/bagend && go mod tidy
