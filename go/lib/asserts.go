@@ -3,8 +3,6 @@ package lib
 import (
 	"fmt"
 	"iter"
-
-	"github.com/mooss/bagend/go/fun/eager/lie"
 )
 
 ///////////////////
@@ -100,12 +98,6 @@ func AsSeq[T any, U any](values ...U) iter.Seq2[T, error] {
 			}
 		}
 	}
-}
-
-// AsSlice asserts that all values are of type T and returns them as a slice of T.
-func AsSlice[T any](values ...any) ([]T, error) {
-	seq := AsSeq[T](values...)
-	return lie.CollectE(seq)
 }
 
 ///////////
