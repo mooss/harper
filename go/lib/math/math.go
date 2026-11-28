@@ -2,8 +2,6 @@ package math
 
 import (
 	"github.com/mooss/bagend/go/fun"
-	"github.com/mooss/bagend/go/fun/seq"
-	"github.com/mooss/bagend/go/fun/seq2"
 	"github.com/mooss/harper/go/lib"
 )
 
@@ -13,10 +11,11 @@ func reduce[T any](fn func(T, T) T) lib.Fun[T, T] {
 			return fun.Zero[T](), err
 		}
 
-		typed, gerr := seq2.SplitErr(lib.AsSeq[T](args...))
-		acc, _ := seq.First(typed)
-		acc = seq.Fold(fn, acc, typed)
-		return acc, gerr()
+		acc := args[0]
+		for _, v := range args[1:] {
+			acc = fn(acc, v)
+		}
+		return acc, nil
 	}
 }
 
