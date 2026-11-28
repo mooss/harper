@@ -11,19 +11,19 @@ import (
 
 var sink any
 
-// Baseline: raw generic function, no interpreter machinery.
+// Baseline: raw generic binary function, no interpreter machinery.
 func BenchmarkPlusDirect(b *testing.B) {
-	plus := math.Plus[typ.Int]
+	plus := math.Add[typ.Int]
 	b.ReportAllocs()
 	for b.Loop() {
-		r, _ := plus(1, 2)
+		r := plus(1, 2)
 		sink = r
 	}
 }
 
-// Current representation path: Variadic adapter + boxing.
+// Current representation path: folding binary add.
 func BenchmarkPlusBuiltin(b *testing.B) {
-	plus := fun.Variadic[typ.Builtin](math.Plus[typ.Int])
+	plus := fun.Fold[typ.Builtin](math.Add[typ.Int], 1)
 	args := []any{typ.Int(1), typ.Int(2)}
 	b.ReportAllocs()
 	for b.Loop() {
@@ -63,7 +63,7 @@ func BenchmarkEnvGetNested(b *testing.B) {
 func BenchmarkPlusViaEnv(b *testing.B) {
 	env := harp.MkEnv()
 	val, _ := env.Need("+")
-	plus := val.(typ.Builtin)
+	plus := val.(typ.Builtin) //nolint:revive
 	args := []any{typ.Int(1), typ.Int(2)}
 	b.ReportAllocs()
 	for b.Loop() {
