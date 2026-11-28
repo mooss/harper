@@ -54,7 +54,7 @@ def main():
 
     package = f"./{folder.as_posix()}"
     run_and_tee(
-        ["go", "test", "-bench=.", "-benchmem", "-benchtime", "2s", package],
+        ["go", "test", "-bench=.", "-benchmem", "-benchtime", "1s", package],
         benchmark,
     )
 
