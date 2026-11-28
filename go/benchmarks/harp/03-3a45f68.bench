@@ -1,0 +1,12 @@
+goos: linux
+goarch: amd64
+pkg: github.com/mooss/harper/go/harp
+cpu: AMD Custom APU 0405
+BenchmarkPlusDirect-8     	462854226	         2.594 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPlusBuiltin-8    	130085346	         9.218 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLtBuiltin-8      	133872657	         8.964 ns/op	       0 B/op	       0 allocs/op
+BenchmarkEnvGetRoot-8     	100000000	        10.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkEnvGetNested-8   	82547656	        14.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPlusViaEnv-8     	95611069	        12.05 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/mooss/harper/go/harp	6.972s
