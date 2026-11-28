@@ -1,6 +1,7 @@
-package harp
+package env
 
 import (
+	"github.com/mooss/harper/go/harp/spe"
 	"github.com/mooss/harper/go/harp/typ"
 	"github.com/mooss/harper/go/lib"
 	"github.com/mooss/harper/go/lib/fun"
@@ -13,6 +14,9 @@ func ii[A, B, R any](fn func(A, B) R) typ.Builtin { return fun.II[typ.Builtin](f
 // MkEnv creates a default Harp environment.
 func MkEnv() *typ.Env {
 	return lib.NewEnv(map[string]any{
+		//////////
+		// Math //
+
 		"+": fun.Fold[typ.Builtin](math.Add[typ.Int], 1),
 		"/": fun.Fold[typ.Builtin](math.Div[typ.Int], 2),
 		"*": fun.Fold[typ.Builtin](math.Mul[typ.Int], 1),
@@ -22,5 +26,11 @@ func MkEnv() *typ.Env {
 		"<=": ii(math.Leq[typ.Int, typ.Bool]),
 		">":  ii(math.Gt[typ.Int, typ.Bool]),
 		">=": ii(math.Geq[typ.Int, typ.Bool]),
+
+		///////////////////
+		// Special forms //
+
+		"def": spe.IIE(spe.Def),
+		"let": spe.IIE(spe.Let),
 	})
 }

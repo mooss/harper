@@ -7,6 +7,7 @@ import (
 	"github.com/mooss/bagend/go/damn"
 	"github.com/mooss/bagend/go/sysu"
 	"github.com/mooss/harper/go/harp"
+	"github.com/mooss/harper/go/harp/env"
 	"github.com/mooss/harper/go/harp/typ"
 )
 
@@ -24,7 +25,7 @@ func main() {
 		damn.Fatal(expected)
 	}
 
-	fmt.Println(damn.Must(rep(program, harp.MkEnv())))
+	fmt.Println(damn.Must(rep(program, env.MkEnv())))
 }
 
 // rep calls read, eval and print on its input.

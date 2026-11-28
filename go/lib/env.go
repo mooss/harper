@@ -43,6 +43,9 @@ func (e *Env[V]) Set(name string, val V) {
 }
 
 // Nest returns a new empty child environment for a nested scope.
-func (e *Env[V]) Nest() *Env[V] {
-	return &Env[V]{outer: e, data: make(map[string]V)}
+func (e *Env[V]) Nest(assoc map[string]V) *Env[V] {
+	if assoc == nil {
+		assoc = map[string]V{}
+	}
+	return &Env[V]{outer: e, data: assoc}
 }

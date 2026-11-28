@@ -3,7 +3,7 @@ package harp_test
 import (
 	"testing"
 
-	"github.com/mooss/harper/go/harp"
+	"github.com/mooss/harper/go/harp/env"
 	"github.com/mooss/harper/go/harp/typ"
 	"github.com/mooss/harper/go/lib/fun"
 	"github.com/mooss/harper/go/lib/math"
@@ -44,25 +44,25 @@ func BenchmarkLtBuiltin(b *testing.B) {
 }
 
 func BenchmarkEnvGetRoot(b *testing.B) {
-	env := harp.MkEnv()
+	envr := env.MkEnv()
 	b.ReportAllocs()
 	for b.Loop() {
-		_, _ = env.Get("+")
+		_, _ = envr.Get("+")
 	}
 }
 
 func BenchmarkEnvGetNested(b *testing.B) {
-	env := harp.MkEnv().Nest().Nest()
+	envr := env.MkEnv().Nest(nil).Nest(nil)
 	b.ReportAllocs()
 	for b.Loop() {
-		_, _ = env.Get("+")
+		_, _ = envr.Get("+")
 	}
 }
 
 // Full path: env lookup + builtin call.
 func BenchmarkPlusViaEnv(b *testing.B) {
-	env := harp.MkEnv()
-	val, _ := env.Need("+")
+	envr := env.MkEnv()
+	val, _ := envr.Need("+")
 	plus := val.(typ.Builtin) //nolint:revive
 	args := []any{typ.Int(1), typ.Int(2)}
 	b.ReportAllocs()
